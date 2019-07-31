@@ -1,14 +1,21 @@
 package fr.airweb.news.data.db
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import fr.airweb.news.config.DATABASE_NAME
-import fr.airweb.news.data.dao.NewsDao
+import fr.airweb.news.data.dao.PostDao
+import fr.airweb.news.data.models.Post
 
+@Database(
+    entities = [Post::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class PSGDatabase : RoomDatabase() {
 
-    abstract fun getNewsDao() : NewsDao
+    abstract fun getPostDao() : PostDao
 
     companion object {
         @Volatile private var instance : PSGDatabase? = null
