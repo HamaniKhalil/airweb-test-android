@@ -11,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class SplashViewModel @Inject constructor(
@@ -21,8 +22,15 @@ class SplashViewModel @Inject constructor(
     @Inject lateinit var disposable: CompositeDisposable
 
     val news = MutableLiveData<ArrayList<Post>>()
+    val isOffline = MutableLiveData<Boolean>()
 
     fun loadNews() {
+        /**
+         * Not sure how booleans are initialized, so
+         * to make sure the error case modifies live data
+         * this instruction secures the observers triggering
+          */
+        isOffline.value = false
         newsRepository.fetchNews()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -35,6 +43,7 @@ class SplashViewModel @Inject constructor(
                         SPLASH_VM_TAG,
                         LOAD_NEWS_LABEL + throwable.toString()
                     )
+                    isOffline.value = true
                 }
             )
             .addTo(disposable)
@@ -42,6 +51,7 @@ class SplashViewModel @Inject constructor(
 
     fun populateDbWithPosts(posts: ArrayList<Post>) {
         Single.fromCallable {
+            postsRepository.init()
             postsRepository.insertPosts(posts)
         }
             .subscribeOn(Schedulers.io())
@@ -65,13 +75,13 @@ class SplashViewModel @Inject constructor(
 
     companion object {
         // Tags
-        val SPLASH_VM_TAG = "SplashVM"
+        private val SPLASH_VM_TAG = "SplashVM"
 
         // Message suffixes
-        val LOAD_NEWS_LABEL = "In method loadNews(): "
-        val POPULATE_POSTS_LABEL = "In method populateDbWithPosts(): "
+        private val LOAD_NEWS_LABEL = "In method loadNews(): "
+        private val POPULATE_POSTS_LABEL = "In method populateDbWithPosts(): "
 
         // Messages
-        val SUCCESS_MSG = "Operation was successful"
+        private val SUCCESS_MSG = "Operation was successful"
     }
 }

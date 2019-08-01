@@ -33,6 +33,12 @@ class SplashActivity : AppCompatActivity() {
             startActivity(MainActivity.getIntent(this))
         })
 
+        splashViewModel.isOffline.observe(this, Observer { isOffline ->
+            if (isOffline) {
+                startActivity(MainActivity.getIntent(this))
+            }
+        })
+
         splashViewModel.loadNews()
     }
 
