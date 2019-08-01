@@ -28,8 +28,8 @@ class SplashActivity : AppCompatActivity() {
 
         splashViewModel = ViewModelProviders.of(this, psgViewModelFactory).get(SplashViewModel::class.java)
 
-        splashViewModel.posts.observe(this, Observer { posts ->
-            splashViewModel.populateDbWithPosts(posts)
+        splashViewModel.news.observe(this, Observer { news ->
+            splashViewModel.populateDbWithPosts(news)
             startActivity(MainActivity.getIntent(this))
         })
 
@@ -37,6 +37,10 @@ class SplashActivity : AppCompatActivity() {
     }
 
     companion object {
+        /**
+         * Not sure that one is useful since there's no need to access it
+         * from anywhere. But it is left here in case.
+         */
         fun getIntent(context: Context): Intent {
             return Intent(context, SplashActivity::class.java)
         }

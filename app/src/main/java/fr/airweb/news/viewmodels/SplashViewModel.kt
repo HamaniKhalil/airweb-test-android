@@ -20,7 +20,7 @@ class SplashViewModel @Inject constructor(
 
     @Inject lateinit var disposable: CompositeDisposable
 
-    val posts = MutableLiveData<ArrayList<Post>>()
+    val news = MutableLiveData<ArrayList<Post>>()
 
     fun loadNews() {
         newsRepository.fetchNews()
@@ -28,7 +28,7 @@ class SplashViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { news ->
-                    this.posts.value = news.posts
+                    this.news.value = news.news
                 },
                 { throwable ->
                     Log.e(
